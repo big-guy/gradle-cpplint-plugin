@@ -12,6 +12,7 @@ class AbstractIntegrationSpec extends Specification {
 
     File projectDir
     File buildFile
+    BuildResult result
 
     def setup() {
         projectDir = temporaryFolder.root
@@ -37,12 +38,16 @@ class AbstractIntegrationSpec extends Specification {
 """
     }
 
+    File file(String path) {
+        new File(temporaryFolder.root, path)
+    }
+
     protected BuildResult build(String... arguments) {
-        createAndConfigureGradleRunner(arguments).build()
+        result = createAndConfigureGradleRunner(arguments).build()
     }
 
     protected BuildResult buildAndFail(String... arguments) {
-        createAndConfigureGradleRunner(arguments).buildAndFail()
+        result = createAndConfigureGradleRunner(arguments).buildAndFail()
     }
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {

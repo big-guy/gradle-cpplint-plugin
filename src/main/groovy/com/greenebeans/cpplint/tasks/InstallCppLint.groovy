@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class InstallCppLint extends DefaultTask {
 	@Input
-    String distUrl = "https://raw.githubusercontent.com/google/styleguide/b43afc71a5ae4a2585a583333b45ce664cd2c3c6/cpplint/"
+    String distUrl = "https://raw.githubusercontent.com/google/styleguide/b43afc71a5ae4a2585a583333b45ce664cd2c3c6/cpplint/cpplint.py"
 
     @OutputFile
     File installPath = new File(project.buildDir, "cpplint/cpplint.py")

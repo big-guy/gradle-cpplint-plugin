@@ -9,7 +9,7 @@ class CppLintPluginSpec extends AbstractIntegrationSpec {
         """
 
         expect:
-        def result = build("tasks", "--all")
+        build("tasks", "--all")
         !result.output.contains("installCppLint - Installs cpplint.py")
     }
 
@@ -21,7 +21,7 @@ class CppLintPluginSpec extends AbstractIntegrationSpec {
         """
 
         expect:
-        def result = build("tasks", "--all")
+        build("tasks", "--all")
         result.output.contains("installCppLint - Installs cpplint.py")
     }
 }

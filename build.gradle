@@ -1,0 +1,16 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply from: 'gradle/integration-test.gradle'
+
+group = 'com.greenebeans'
+version = '0.1'
+
+repositories {
+	jcenter()
+}
+
+dependencies {
+	compile gradleApi()
+	testCompile gradleTestKit()
+	testCompile 'org.spockframework:spock-core:1.0-groovy-2.4' 
+}

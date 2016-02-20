@@ -20,7 +20,8 @@ task createClasspathManifest {
 }
 
 dependencies {
-     integrationTestCompile files(createClasspathManifest)
+    integrationTestCompile gradleTestKit()
+    integrationTestCompile files(createClasspathManifest)
 }
 
 task integrationTest(type: Test) {

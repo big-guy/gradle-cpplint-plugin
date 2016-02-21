@@ -22,7 +22,7 @@ import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 
-class AbstractIntegrationSpec extends Specification {
+abstract class AbstractIntegrationSpec extends Specification {
     @Rule
     TemporaryFolder temporaryFolder = new TemporaryFolder()
 

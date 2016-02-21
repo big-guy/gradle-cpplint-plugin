@@ -1,13 +1,17 @@
 package com.greenebeans.cpplint.tasks
+
 import org.gradle.api.Action
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.process.ExecResult
 import org.gradle.process.ExecSpec
 
 class RunCppLint extends SourceTask {
+    NativeBinarySpec nativeBinarySpec
+
     @Input
     String executablePath
 

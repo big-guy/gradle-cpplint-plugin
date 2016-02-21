@@ -56,6 +56,7 @@ class CppLintPlugin implements Plugin<Project> {
 
         @Override
         void execute(RunCppLint runCppLint) {
+            runCppLint.nativeBinarySpec = nativeBinarySpec
             runCppLint.source(CollectionUtils.collect(nativeBinarySpec.getInputs(), new Transformer<Iterable<File>, LanguageSourceSet>() {
                 @Override
                 Iterable<File> transform(LanguageSourceSet o) {

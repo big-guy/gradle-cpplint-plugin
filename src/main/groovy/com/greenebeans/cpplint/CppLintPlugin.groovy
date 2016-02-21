@@ -1,6 +1,5 @@
 package com.greenebeans.cpplint
 
-import com.greenebeans.cpplint.CppLintPlugin.Rules
 import com.greenebeans.cpplint.tasks.InstallCppLint
 import com.greenebeans.cpplint.tasks.RunCppLint
 import org.gradle.api.*
@@ -17,23 +16,25 @@ class CppLintPlugin implements Plugin<Project> {
         project.pluginManager.withPlugin("org.gradle.cpp") {
             project.tasks.create(INSTALL_TASK_NAME, InstallCppLint)
             project.apply(plugin: Rules)
+            project.tasks["check"].dependsOn project.tasks.withType(RunCppLint)
         }
     }
 
     public static class Rules extends RuleSource {
         @Mutate
         void createRunLintTasks(ModelMap<Task> tasks, @Path("binaries") ModelMap<NativeBinarySpec> binaries) {
-            println "createRunLintTasks"
             for (NativeBinarySpec binary : binaries) {
                 def taskName = buildRunLintTaskName(binary.component.name, binary.name)
                 if (tasks.get(taskName)==null) {
+                    // TODO: This shouldn't be necessary
                     tasks.create(buildRunLintTaskName(binary.component.name, binary.name), RunCppLint, new ConfigureRunLintTask(binary))
                 }
             }
         }
 
-        @Finalize
-        void configureRunLintTask(@Each RunCppLint runTask, @Path("tasks.installCppLint") InstallCppLint installTask) {
+        @Mutate
+        void configureRunLintTask(@Each RunCppLint runTask,
+                                  @Path("tasks.installCppLint") InstallCppLint installTask) {
             runTask.with {
                 description = "Runs cpplint.py"
                 group = "verification"
@@ -55,12 +56,9 @@ class CppLintPlugin implements Plugin<Project> {
 
         @Override
         void execute(RunCppLint runCppLint) {
-            println "sources? " + nativeBinarySpec.sources.values()
             runCppLint.source(CollectionUtils.collect(nativeBinarySpec.getInputs(), new Transformer<Iterable<File>, LanguageSourceSet>() {
                 @Override
                 Iterable<File> transform(LanguageSourceSet o) {
-                    println "Adding " + o.source.name
-                    println "contents " + o.source.files
                     return o.source
                 }
             }))

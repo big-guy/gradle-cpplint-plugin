@@ -4,6 +4,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.process.ExecResult
 import org.gradle.process.ExecSpec
 
 class RunCppLint extends SourceTask {
@@ -23,13 +24,16 @@ class RunCppLint extends SourceTask {
 
     @TaskAction
     void run() {
-        project.exec(new Action<ExecSpec>() {
+        ExecResult result = project.exec(new Action<ExecSpec>() {
             @Override
             void execute(ExecSpec execSpec) {
                 execSpec.executable = executablePath
                 execSpec.args "--verbose=${verbosity}", "--counting=${counting}"
-                execSpec.args getSource().getFiles()
+                execSpec.args getSource().getFiles().unique()
+                execSpec.ignoreExitValue = true
             }
         })
+
+        result.assertNormalExitValue()
     }
 }

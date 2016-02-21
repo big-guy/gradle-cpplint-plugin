@@ -18,6 +18,8 @@ class CppLintIntegrationSpec extends AbstractIntegrationSpec {
         srcDir.mkdirs()
         def srcFile = file("src/main/cpp/main.cpp")
         srcFile << """
+// Copyright 2016 Example
+
     int main(int argc, char** argv) {
        return 0;
     }
@@ -46,8 +48,13 @@ class CppLintIntegrationSpec extends AbstractIntegrationSpec {
 
     def "runs cpplint"() {
         when:
-        build("runLintMainExecutable")
+        build("check")
         then:
-        result.output.contains("runLintMainExecutable - Runs cpplint.py")
+        result.task(":runLintMainExecutable").outcome == TaskOutcome.SUCCESS
+
+        when:
+        build("check")
+        then:
+        result.task(":runLintMainExecutable").outcome == TaskOutcome.UP_TO_DATE
     }
 }

@@ -25,13 +25,25 @@ import org.gradle.internal.nativeplatform.filesystem.FileSystem
 
 import javax.inject.Inject
 
+/**
+ * TODO: Docs
+ */
 class InstallCppLint extends DefaultTask {
+    /**
+     * The URL to download the cpplint.py executable from
+     */
 	@Input
     String distUrl
 
+    /**
+     * Location on disk to install cpplint to (defaults to build/cpplint/cpplint.py)
+     */
     @OutputFile
     File installPath
 
+    /**
+     * Skip installing.  If this is true, cpplint.py must be available somewhere locally already.
+     */
     @Input
     boolean skipInstall
 
@@ -44,12 +56,11 @@ class InstallCppLint extends DefaultTask {
     void download() {
         if (skipInstall) {
             checkCppLintExists("cpplint.py (looked for ${installPath}) is not installed, but the build is configured to skip install.")
-            return
+        } else {
+            installPath << new URL(distUrl).openStream()
+            checkCppLintExists("cpplint.py (looked for ${installPath}) is not installed, and the build tried to download it from ${distUrl}.")
+            fileSystem.chmod(installPath, 0744)
         }
-
-        installPath << new URL(distUrl).openStream()
-        checkCppLintExists("cpplint.py (looked for ${installPath}) is not installed, and the build tried to download it from ${distUrl}.")
-        fileSystem.chmod(installPath, 0744)
     }
 
     private void checkCppLintExists(String msg) {

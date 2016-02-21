@@ -16,23 +16,11 @@
 
 package com.greenebeans.cpplint
 
-class CppLintPluginSpec extends AbstractIntegrationSpec {
+class CppLintPluginWellBehavedSpec extends AbstractIntegrationSpec {
 
-    def "does nothing when CPP plugin is not applied"() {
+    def "does not explode"() {
         given:
         buildFile << """
-            apply plugin: 'com.greenebeans.cpplint'
-        """
-
-        expect:
-        build("tasks", "--all")
-        !result.output.contains("installCppLint - Installs cpplint.py")
-    }
-
-    def "adds task when CPP plugin is applied"() {
-        given:
-        buildFile << """
-            apply plugin: 'org.gradle.cpp'
             apply plugin: 'com.greenebeans.cpplint'
         """
 

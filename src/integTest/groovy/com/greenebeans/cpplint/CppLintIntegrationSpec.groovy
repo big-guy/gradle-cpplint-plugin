@@ -56,13 +56,7 @@ model {
         result.task(":installCppLint").outcome == TaskOutcome.UP_TO_DATE
     }
 
-    def "adds a cpplint task for component"() {
-        expect:
-        build("tasks")
-        result.output.contains("runLintMainExecutable - Runs cpplint.py")
-    }
-
-    def "runs cpplint"() {
+    def "runs cpplint - good code"() {
         when:
         build("check")
         then:
@@ -72,6 +66,28 @@ model {
         build("check")
         then:
         result.task(":runLintMainExecutable").outcome == TaskOutcome.UP_TO_DATE
+    }
+
+
+    def "runs cpplint - bad code"() {
+        given:
+        def srcFile = file("src/main/cpp/bad.cpp")
+        srcFile << """
+int foo() { return 42; }
+"""
+        when:
+        buildAndFail("check")
+        then:
+        result.task(":runLintMainExecutable").outcome == TaskOutcome.FAILED
+
+        when:
+        srcFile << """
+// Copyright 2016 Example
+"""
+        and:
+        build("check")
+        then:
+        result.task(":runLintMainExecutable").outcome == TaskOutcome.SUCCESS
     }
 
     def "works for multiple components"() {

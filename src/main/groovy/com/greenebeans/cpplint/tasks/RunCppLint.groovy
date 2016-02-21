@@ -15,45 +15,63 @@
  */
 
 package com.greenebeans.cpplint.tasks
-
-import org.gradle.api.Action
+import com.greenebeans.cpplint.tasks.internal.CppLintTool
+import com.greenebeans.cpplint.tasks.internal.DefaultCppLintSpec
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.operations.BuildOperationProcessor
+import org.gradle.internal.operations.logging.BuildOperationLogger
+import org.gradle.internal.operations.logging.BuildOperationLoggerFactory
 import org.gradle.nativeplatform.NativeBinarySpec
-import org.gradle.process.ExecResult
-import org.gradle.process.ExecSpec
+import org.gradle.process.internal.ExecActionFactory
+
+import javax.inject.Inject
 
 class RunCppLint extends SourceTask {
     NativeBinarySpec nativeBinarySpec
 
     @Input
+    String counting = "total" // total|detailed|toplevel
+
+    @Input
     String executablePath
 
-    @OutputFile
-    File reportFile = new File(project.buildDir, "reports/cpplint/cpplint.txt")
+    @OutputDirectory
+    File reportFile = new File(project.buildDir, "reports/cpplint")
 
     @Input
     int verbosity = 0
 
-    String counting = "total" // total|detailed|toplevel
+    @Inject
+    protected BuildOperationLoggerFactory getBuildOperationLoggerFactory() {
+        throw new UnsupportedOperationException();
+    }
 
-    @Input
-    String outputType = "report" // report|console|both
+    @Inject
+    protected BuildOperationProcessor getBuildOperationProcessor() {
+        throw new UnsupportedOperationException()
+    }
+
+    @Inject
+    protected ExecActionFactory getExecActionFactory() {
+        throw new UnsupportedOperationException()
+    }
 
     @TaskAction
     void run() {
-        ExecResult result = project.exec(new Action<ExecSpec>() {
-            @Override
-            void execute(ExecSpec execSpec) {
-                execSpec.executable = executablePath
-                execSpec.args "--verbose=${verbosity}", "--counting=${counting}"
-                execSpec.args getSource().getFiles().unique()
-                execSpec.ignoreExitValue = true
-            }
-        })
+        BuildOperationLogger buildOperationLogger = buildOperationLoggerFactory.newOperationLogger(getName(), reportFile)
+        try {
+            buildOperationLogger.start()
+            CppLintTool tool = new CppLintTool(buildOperationProcessor, execActionFactory)
+            setDidWork(tool.execute(createSpec(buildOperationLogger)).didWork)
+        } finally {
+            buildOperationLogger.done()
+        }
+    }
 
-        result.assertNormalExitValue()
+    private DefaultCppLintSpec createSpec(BuildOperationLogger buildOperationLogger) {
+        new DefaultCppLintSpec(counting, executablePath, verbosity, getSource().getFiles(), buildOperationLogger)
     }
 }

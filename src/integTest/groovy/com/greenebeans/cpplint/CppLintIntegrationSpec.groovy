@@ -68,7 +68,6 @@ model {
         result.task(":runLintMainExecutable").outcome == TaskOutcome.UP_TO_DATE
     }
 
-
     def "runs cpplint - bad code"() {
         given:
         def srcFile = file("src/main/cpp/bad.cpp")

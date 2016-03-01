@@ -57,10 +57,14 @@ class InstallCppLint extends DefaultTask {
         if (skipInstall) {
             checkCppLintExists("cpplint.py (looked for ${installPath}) is not installed, but the build is configured to skip install.")
         } else {
-            installPath << new URL(distUrl).openStream()
-            checkCppLintExists("cpplint.py (looked for ${installPath}) is not installed, and the build tried to download it from ${distUrl}.")
-            fileSystem.chmod(installPath, 0744)
+            try {
+                installPath << new URL(distUrl).openStream()
+                checkCppLintExists("cpplint.py (looked for ${installPath}) is not installed, and the build tried to download it from ${distUrl}.")
+            } catch (IOException e) {
+                throw new GradleException("Could not download cpplint.py from $distUrl", e)
+            }
         }
+        fileSystem.chmod(installPath, 0744)
     }
 
     private void checkCppLintExists(String msg) {

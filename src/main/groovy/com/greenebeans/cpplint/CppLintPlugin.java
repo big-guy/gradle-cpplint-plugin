@@ -40,7 +40,7 @@ public class CppLintPlugin implements Plugin<Project> {
         public void createRunLintTasks(ModelMap<Task> tasks, @Path("binaries") ModelMap<NativeBinarySpec> binaries) {
             for (final NativeBinarySpec binary : binaries) {
                 String taskName = buildRunLintTaskName(binary.getComponent().getName(), binary.getName());
-                tasks.create(buildRunLintTaskName(binary.getComponent().getName(), binary.getName()), RunCppLint.class, new Action<RunCppLint>() {
+                tasks.create(taskName, RunCppLint.class, new Action<RunCppLint>() {
                     public void execute(RunCppLint task) {
                         task.setNativeBinarySpec(binary);
                         task.source(CollectionUtils.collect(binary.getInputs(), new Transformer<Iterable<File>, LanguageSourceSet>() {

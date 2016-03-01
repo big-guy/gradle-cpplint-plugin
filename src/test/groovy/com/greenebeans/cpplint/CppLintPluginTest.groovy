@@ -1,8 +1,11 @@
 package com.greenebeans.cpplint
 import com.greenebeans.cpplint.tasks.InstallCppLint
+import com.greenebeans.cpplint.tasks.RunCppLint
 import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.model.ModelMap
+import org.gradle.nativeplatform.NativeBinarySpec
+import org.gradle.nativeplatform.NativeComponentSpec
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
@@ -41,6 +44,32 @@ class CppLintPluginTest extends Specification {
         }
         1 * installTask.setSkipInstall(false)
 
+        0 * _
+    }
+
+    def "creates a run-lint task for each binary"() {
+        def rules = new CppLintPlugin.Rules()
+        ModelMap<Task> tasks = Mock()
+        ModelMap<NativeBinarySpec> binaries = Mock()
+
+        NativeComponentSpec componentSpec = Mock()
+        NativeBinarySpec binary1 = Mock()
+        NativeBinarySpec binary2 = Mock()
+
+        when:
+        rules.createRunLintTasks(tasks, binaries)
+        then:
+        2 * componentSpec.getName() >> "component"
+        1 * binary1.getComponent() >> componentSpec
+        1 * binary1.getName() >> "binary1"
+        1 * binary2.getComponent() >> componentSpec
+        1 * binary2.getName() >> "binary2"
+
+        1 * binaries.iterator() >> {
+            [ binary1, binary2 ].iterator()
+        }
+        1 * tasks.create("runLintComponentBinary1", RunCppLint, _)
+        1 * tasks.create("runLintComponentBinary2", RunCppLint, _)
         0 * _
     }
 }

@@ -13,25 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greenebeans.cpplint.tasks.internal;
+package com.greenebeans.cpplint.internal.exec;
 
 import org.gradle.internal.operations.BuildOperation;
+import org.gradle.internal.operations.BuildOperationFailure;
 
-import java.io.File;
-
-public class CppLintInvocation implements BuildOperation {
-    private final File sourceFile;
-
-    public CppLintInvocation(File sourceFile) {
-        this.sourceFile = sourceFile;
-    }
-
-    @Override
-    public String getDescription() {
-        return "lint for " + sourceFile;
-    }
-
-    public File getSourceFile() {
-        return sourceFile;
+public class CppLintFailure extends BuildOperationFailure {
+    protected CppLintFailure(BuildOperation operation, String message, Throwable cause) {
+        super(operation, message, cause);
     }
 }

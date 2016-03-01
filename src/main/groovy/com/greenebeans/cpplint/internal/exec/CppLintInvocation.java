@@ -13,18 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greenebeans.cpplint.tasks.internal;
+package com.greenebeans.cpplint.internal.exec;
 
-import org.gradle.internal.operations.logging.BuildOperationLogger;
-import org.gradle.language.base.internal.compile.CompileSpec;
+import org.gradle.internal.operations.BuildOperation;
 
 import java.io.File;
-import java.util.Collection;
 
-public interface CppLintSpec extends CompileSpec {
-    String getCounting();
-    String getExecutablePath();
-    int getVerbosity();
-    Collection<File> getSourceFiles();
-    BuildOperationLogger getBuildOperationLogger();
+public class CppLintInvocation implements BuildOperation {
+    private final File sourceFile;
+
+    public CppLintInvocation(File sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
+    @Override
+    public String getDescription() {
+        return "lint for " + sourceFile;
+    }
+
+    public File getSourceFile() {
+        return sourceFile;
+    }
 }

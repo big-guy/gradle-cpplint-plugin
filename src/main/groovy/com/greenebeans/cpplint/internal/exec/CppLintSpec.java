@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greenebeans.cpplint.tasks.internal;
+package com.greenebeans.cpplint.internal.exec;
 
-import org.gradle.internal.operations.BuildOperation;
-import org.gradle.internal.operations.BuildOperationFailure;
+import org.gradle.internal.operations.logging.BuildOperationLogger;
+import org.gradle.language.base.internal.compile.CompileSpec;
 
-public class CppLintFailure extends BuildOperationFailure {
-    protected CppLintFailure(BuildOperation operation, String message, Throwable cause) {
-        super(operation, message, cause);
-    }
+import java.io.File;
+import java.util.Collection;
+
+public interface CppLintSpec extends CompileSpec {
+    String getCounting();
+    String getExecutablePath();
+    int getVerbosity();
+    Collection<File> getSourceFiles();
+    BuildOperationLogger getBuildOperationLogger();
 }

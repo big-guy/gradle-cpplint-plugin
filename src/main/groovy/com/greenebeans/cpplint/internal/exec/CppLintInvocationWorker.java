@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.greenebeans.cpplint.tasks.internal;
+package com.greenebeans.cpplint.internal.exec;
 
 import org.gradle.internal.operations.BuildOperationWorker;
 import org.gradle.process.internal.ExecAction;

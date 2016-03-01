@@ -16,9 +16,9 @@
 
 package com.greenebeans.cpplint.tasks
 
-import com.greenebeans.cpplint.tasks.internal.CppLintSpec
-import com.greenebeans.cpplint.tasks.internal.CppLintTool
-import com.greenebeans.cpplint.tasks.internal.DefaultCppLintSpec
+import com.greenebeans.cpplint.internal.exec.CppLintSpec
+import com.greenebeans.cpplint.internal.exec.CppLintTool
+import com.greenebeans.cpplint.internal.exec.DefaultCppLintSpec
 import org.gradle.api.Action
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory

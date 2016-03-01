@@ -1,4 +1,6 @@
 package com.greenebeans.cpplint
+
+import com.greenebeans.cpplint.internal.CppLintPlugin
 import com.greenebeans.cpplint.tasks.InstallCppLint
 import com.greenebeans.cpplint.tasks.RunCppLint
 import org.gradle.api.Action

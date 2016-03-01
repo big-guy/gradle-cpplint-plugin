@@ -1,4 +1,4 @@
-package com.greenebeans.cpplint;
+package com.greenebeans.cpplint.internal;
 
 import com.greenebeans.cpplint.tasks.InstallCppLint;
 import com.greenebeans.cpplint.tasks.RunCppLint;

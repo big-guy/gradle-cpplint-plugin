@@ -26,7 +26,7 @@ import org.gradle.internal.nativeplatform.filesystem.FileSystem
 import javax.inject.Inject
 
 /**
- * TODO: Docs
+ * Installs cpplint.py to a well known location so other tasks can use it.
  */
 class InstallCppLint extends DefaultTask {
     /**

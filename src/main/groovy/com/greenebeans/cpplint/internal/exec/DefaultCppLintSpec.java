@@ -22,13 +22,13 @@ import java.util.Collection;
 
 public class DefaultCppLintSpec implements CppLintSpec {
 
-    private final String counting;
-    private final String executablePath;
+    private final Counting counting;
+    private final File executablePath;
     private final int verbosity;
     private final Collection<File> sourceFiles;
     private final BuildOperationLogger buildOperationLogger;
 
-    public DefaultCppLintSpec(String counting, String executablePath, int verbosity, Collection<File> sourceFiles, BuildOperationLogger buildOperationLogger) {
+    public DefaultCppLintSpec(Counting counting, File executablePath, int verbosity, Collection<File> sourceFiles, BuildOperationLogger buildOperationLogger) {
         this.counting = counting;
         this.executablePath = executablePath;
         this.verbosity = verbosity;
@@ -37,12 +37,12 @@ public class DefaultCppLintSpec implements CppLintSpec {
     }
 
     @Override
-    public String getCounting() {
+    public Counting getCounting() {
         return counting;
     }
 
     @Override
-    public String getExecutablePath() {
+    public File getExecutablePath() {
         return executablePath;
     }
 

@@ -16,6 +16,7 @@
 
 package com.greenebeans.cpplint.tasks
 
+import com.greenebeans.cpplint.internal.exec.Counting
 import com.greenebeans.cpplint.internal.exec.CppLintSpec
 import com.greenebeans.cpplint.internal.exec.CppLintTool
 import com.greenebeans.cpplint.internal.exec.DefaultCppLintSpec
@@ -35,20 +36,28 @@ import org.gradle.process.internal.ExecActionFactory
 import javax.inject.Inject
 
 /**
- * TODO docs
+ * Runs cpplint.py for a given native binary.
+ *
  * TODO consider CFG file
  */
 class RunCppLint extends SourceTask {
     NativeBinarySpec nativeBinarySpec
 
+    /**
+     * Type of counting used in the report.
+     *
+     * "total" is the default.
+     * "detailed"
+     * "toplevel"
+     */
     @Input
-    String counting = "total" // total|detailed|toplevel
+    String counting
 
     @Input
-    String executablePath
+    Object executablePath
 
     @Input
-    int verbosity = 0
+    int verbosity
 
     @OutputDirectory
     File reportFile = new File(project.buildDir, "reports/cpplint")
@@ -94,6 +103,7 @@ class RunCppLint extends SourceTask {
     }
 
     private CppLintSpec createSpec(Collection<File> files, BuildOperationLogger buildOperationLogger) {
-        return new DefaultCppLintSpec(counting, executablePath, verbosity, files, buildOperationLogger)
+        Counting enumValue = Counting.valueOf(counting.toUpperCase())
+        return new DefaultCppLintSpec(enumValue, project.file(executablePath), verbosity, files, buildOperationLogger)
     }
 }

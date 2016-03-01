@@ -64,6 +64,8 @@ public class CppLintPlugin implements Plugin<Project> {
                     runTask.setDescription("Runs cpplint.py");
                     runTask.setGroup("verification");
                     runTask.setExecutablePath(installTask.getInstallPath().getAbsolutePath());
+                    runTask.setCounting("total");
+                    runTask.setVerbosity(0);
                     runTask.dependsOn(installTask);
                 }
             });

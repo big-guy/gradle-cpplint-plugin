@@ -22,8 +22,8 @@ import java.io.File;
 import java.util.Collection;
 
 public interface CppLintSpec extends CompileSpec {
-    String getCounting();
-    String getExecutablePath();
+    Counting getCounting();
+    File getExecutablePath();
     int getVerbosity();
     Collection<File> getSourceFiles();
     BuildOperationLogger getBuildOperationLogger();

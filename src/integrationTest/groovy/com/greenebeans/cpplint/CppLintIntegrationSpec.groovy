@@ -146,7 +146,7 @@ model {
     }
 
     tasks {
-        withType(com.greenebeans.cpplint.tasks.RunCppLint) {
+        withType(RunCppLint) {
             onlyIf {
                 nativeBinarySpec.flavor == flavors.professional
             }

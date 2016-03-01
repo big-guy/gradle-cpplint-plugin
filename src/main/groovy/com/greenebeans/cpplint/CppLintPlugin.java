@@ -16,6 +16,7 @@ public class CppLintPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPluginManager().apply("org.gradle.cpp");
+        project.getExtensions().getExtraProperties().set("RunCppLint", RunCppLint.class);
     }
 
     @SuppressWarnings("unused")

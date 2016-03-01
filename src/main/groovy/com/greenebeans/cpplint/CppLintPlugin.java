@@ -55,12 +55,17 @@ public class CppLintPlugin implements Plugin<Project> {
         }
 
         @Mutate
-        public void configureRunLintTask(@Each RunCppLint runTask,
+        public void configureRunLintTask(@Path("tasks") ModelMap<RunCppLint> runTasks,
                                          @Path("tasks.installCppLint") final InstallCppLint installTask) {
-            runTask.setDescription("Runs cpplint.py");
-            runTask.setGroup("verification");
-            runTask.setExecutablePath(installTask.getInstallPath().getAbsolutePath());
-            runTask.dependsOn(installTask);
+            runTasks.afterEach(new Action<RunCppLint>() {
+                @Override
+                public void execute(RunCppLint runTask) {
+                    runTask.setDescription("Runs cpplint.py");
+                    runTask.setGroup("verification");
+                    runTask.setExecutablePath(installTask.getInstallPath().getAbsolutePath());
+                    runTask.dependsOn(installTask);
+                }
+            });
         }
 
         @Mutate

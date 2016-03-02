@@ -45,7 +45,7 @@ public class CppLintInvocationWorker implements BuildOperationWorker<CppLintInvo
         ExecAction execAction = execActionFactory.newExecAction();
         execAction.setExecutable(spec.getExecutablePath());
         execAction.args("--verbose=" + spec.getVerbosity());
-        execAction.args("--counting=" + spec.getCounting());
+        execAction.args("--counting=" + spec.getCounting().toString().toLowerCase());
         execAction.args(cppLintInvocation.getSourceFile());
 
         execAction.setErrorOutput(errOutput);

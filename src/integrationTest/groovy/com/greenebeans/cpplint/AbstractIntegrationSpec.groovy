@@ -67,6 +67,6 @@ abstract class AbstractIntegrationSpec extends Specification {
     }
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
-        GradleRunner.create().withProjectDir(projectDir).withArguments(arguments)
+        GradleRunner.create().withProjectDir(projectDir).withArguments(arguments).forwardOutput().withDebug(true)
     }
 }

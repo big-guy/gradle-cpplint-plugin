@@ -16,12 +16,11 @@
 package com.greenebeans.cpplint.internal.exec;
 
 import org.gradle.internal.operations.logging.BuildOperationLogger;
-import org.gradle.language.base.internal.compile.CompileSpec;
 
 import java.io.File;
 import java.util.Collection;
 
-public interface CppLintSpec extends CompileSpec {
+public interface CppLintSpec {
     Counting getCounting();
     File getExecutablePath();
     int getVerbosity();

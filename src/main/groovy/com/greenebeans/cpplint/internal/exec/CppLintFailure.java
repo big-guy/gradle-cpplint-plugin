@@ -15,11 +15,13 @@
  */
 package com.greenebeans.cpplint.internal.exec;
 
-import org.gradle.internal.operations.BuildOperation;
-import org.gradle.internal.operations.BuildOperationFailure;
+import org.gradle.api.GradleException;
 
-public class CppLintFailure extends BuildOperationFailure {
-    protected CppLintFailure(BuildOperation operation, String message, Throwable cause) {
-        super(operation, message, cause);
+public class CppLintFailure extends GradleException {
+    private final CppLintInvocation operation;
+
+    protected CppLintFailure(CppLintInvocation operation, String message, Throwable cause) {
+        super(message, cause);
+        this.operation = operation;
     }
 }

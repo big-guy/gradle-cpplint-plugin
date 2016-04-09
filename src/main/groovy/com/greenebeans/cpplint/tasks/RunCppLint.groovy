@@ -27,14 +27,12 @@ import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.api.tasks.incremental.InputFileDetails
-import org.gradle.internal.operations.BuildOperationProcessor
 import org.gradle.internal.operations.logging.BuildOperationLogger
 import org.gradle.internal.operations.logging.BuildOperationLoggerFactory
 import org.gradle.nativeplatform.NativeBinarySpec
 import org.gradle.process.internal.ExecActionFactory
 
 import javax.inject.Inject
-
 /**
  * Runs cpplint.py for a given native binary.
  *
@@ -68,11 +66,6 @@ class RunCppLint extends SourceTask {
     }
 
     @Inject
-    protected BuildOperationProcessor getBuildOperationProcessor() {
-        throw new UnsupportedOperationException()
-    }
-
-    @Inject
     protected ExecActionFactory getExecActionFactory() {
         throw new UnsupportedOperationException()
     }
@@ -83,7 +76,7 @@ class RunCppLint extends SourceTask {
         try {
             buildOperationLogger.start()
 
-            CppLintTool tool = new CppLintTool(buildOperationProcessor, execActionFactory)
+            CppLintTool tool = new CppLintTool(execActionFactory)
             Collection<File> files = []
             if (taskInputs.incremental) {
                 taskInputs.outOfDate(new Action<InputFileDetails>() {
@@ -96,7 +89,7 @@ class RunCppLint extends SourceTask {
                 files.addAll(getSource().getFiles())
             }
             CppLintSpec spec = createSpec(files, buildOperationLogger)
-            setDidWork(tool.execute(spec).didWork)
+            setDidWork(tool.transform(spec).didWork)
         } finally {
             buildOperationLogger.done()
         }

@@ -5,6 +5,8 @@ import com.greenebeans.cpplint.tasks.RunCppLint;
 import org.gradle.api.*;
 import org.gradle.api.tasks.TaskCollection;
 import org.gradle.language.base.LanguageSourceSet;
+import org.gradle.language.base.plugins.LifecycleBasePlugin;
+import org.gradle.language.nativeplatform.HeaderExportingSourceSet;
 import org.gradle.model.*;
 import org.gradle.nativeplatform.NativeBinarySpec;
 import org.gradle.util.CollectionUtils;
@@ -16,12 +18,13 @@ public class CppLintPlugin implements Plugin<Project> {
     @Override
     public void apply(final Project project) {
         project.getPluginManager().apply("org.gradle.cpp");
-        project.getExtensions().getExtraProperties().set("RunCppLint", RunCppLint.class);
+        project.getExtensions().getExtraProperties().set(RunCppLint.class.getSimpleName(), RunCppLint.class);
     }
 
     @SuppressWarnings("unused")
     public static class Rules extends RuleSource {
         private static final String INSTALL_TASK_NAME = "installCppLint";
+        private static final String RUN_TASK_NAME = "runLint";
 
         @Defaults
         public void addLintInstallTask(ModelMap<Task> tasks,
@@ -29,7 +32,8 @@ public class CppLintPlugin implements Plugin<Project> {
             tasks.create(INSTALL_TASK_NAME, InstallCppLint.class, new Action<InstallCppLint>() {
                 @Override
                 public void execute(InstallCppLint installCppLint) {
-                    installCppLint.setDescription("Installs cpplint.py");
+                    installCppLint.setDescription("Installs cpplint.py to a project-local directory.");
+                    installCppLint.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
                     installCppLint.setDistUrl("https://raw.githubusercontent.com/google/styleguide/b43afc71a5ae4a2585a583333b45ce664cd2c3c6/cpplint/cpplint.py");
                     installCppLint.setInstallPath(new File(buildDir, "cpplint/cpplint.py"));
                     installCppLint.setSkipInstall(false);
@@ -40,18 +44,32 @@ public class CppLintPlugin implements Plugin<Project> {
         @Mutate
         public void createRunLintTasks(ModelMap<Task> tasks, @Path("binaries") ModelMap<NativeBinarySpec> binaries) {
             for (final NativeBinarySpec binary : binaries) {
-                String taskName = buildRunLintTaskName(binary.getComponent().getName(), binary.getName());
-                tasks.create(taskName, RunCppLint.class, new Action<RunCppLint>() {
-                    public void execute(RunCppLint task) {
-                        task.setNativeBinarySpec(binary);
-                        task.source(CollectionUtils.collect(binary.getInputs(), new Transformer<Iterable<File>, LanguageSourceSet>() {
-                            @Override
-                            public Iterable<File> transform(LanguageSourceSet o) {
-                                return o.getSource();
-                            }
-                        }));
-                    }
-                });
+                if (binary.isBuildable()) {
+                    String taskName = buildRunLintTaskName(binary.getComponent().getName(), binary.getName());
+                    tasks.create(taskName, RunCppLint.class, new Action<RunCppLint>() {
+                        public void execute(RunCppLint task) {
+                            task.setNativeBinarySpec(binary);
+                            task.source(CollectionUtils.collect(binary.getInputs(), new Transformer<Iterable<File>, LanguageSourceSet>() {
+                                @Override
+                                public Iterable<File> transform(LanguageSourceSet o) {
+                                    return o.getSource();
+                                }
+                            }));
+                            task.source(CollectionUtils.collect(binary.getInputs().withType(HeaderExportingSourceSet.class), new Transformer<Iterable<File>, HeaderExportingSourceSet>() {
+                                @Override
+                                public Iterable<File> transform(HeaderExportingSourceSet o) {
+                                    return o.getExportedHeaders();
+                                }
+                            }));
+                            task.source(CollectionUtils.collect(binary.getInputs().withType(HeaderExportingSourceSet.class), new Transformer<Iterable<File>, HeaderExportingSourceSet>() {
+                                @Override
+                                public Iterable<File> transform(HeaderExportingSourceSet o) {
+                                    return o.getImplicitHeaders();
+                                }
+                            }));
+                        }
+                    });
+                }
             }
         }
 
@@ -61,8 +79,8 @@ public class CppLintPlugin implements Plugin<Project> {
             runTasks.afterEach(new Action<RunCppLint>() {
                 @Override
                 public void execute(RunCppLint runTask) {
-                    runTask.setDescription("Runs cpplint.py");
-                    runTask.setGroup("verification");
+                    runTask.setDescription("Runs cpplint.py against sources for " + runTask.getNativeBinarySpec().getDisplayName());
+                    runTask.setGroup(LifecycleBasePlugin.VERIFICATION_GROUP);
                     runTask.setExecutablePath(installTask.getInstallPath().getAbsolutePath());
                     runTask.setCounting("total");
                     runTask.setVerbosity(0);
@@ -82,7 +100,7 @@ public class CppLintPlugin implements Plugin<Project> {
         }
 
         private String buildRunLintTaskName(String componentName, String binaryName) {
-            StringBuilder sb = new StringBuilder("runLint");
+            StringBuilder sb = new StringBuilder(RUN_TASK_NAME);
             sb.append(Character.toTitleCase(componentName.charAt(0))).append(componentName.substring(1));
             sb.append(Character.toTitleCase(binaryName.charAt(0))).append(binaryName.substring(1));
             return sb.toString();

@@ -15,14 +15,14 @@
  */
 package com.greenebeans.cpplint.internal.exec;
 
-import org.gradle.internal.operations.BuildOperationWorker;
+import org.gradle.api.Action;
 import org.gradle.process.internal.ExecAction;
 import org.gradle.process.internal.ExecActionFactory;
 import org.gradle.process.internal.ExecException;
 
 import java.io.ByteArrayOutputStream;
 
-public class CppLintInvocationWorker implements BuildOperationWorker<CppLintInvocation> {
+public class CppLintInvocationWorker implements Action<CppLintInvocation> {
 
     private final CppLintSpec spec;
     private final ExecActionFactory execActionFactory;
@@ -32,7 +32,6 @@ public class CppLintInvocationWorker implements BuildOperationWorker<CppLintInvo
         this.execActionFactory = execActionFactory;
     }
 
-    @Override
     public String getDisplayName() {
         return "cpplint worker";
     }

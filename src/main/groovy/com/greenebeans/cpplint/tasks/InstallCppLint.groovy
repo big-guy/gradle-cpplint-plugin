@@ -59,7 +59,7 @@ class InstallCppLint extends DefaultTask {
         } else {
             try {
                 def urlConnection = new URL(distUrl).openConnection()
-                urlConnection.setConnectTimeout(10)
+                urlConnection.setConnectTimeout(1000)
                 urlConnection.connect()
                 installPath << urlConnection.inputStream
                 checkCppLintExists("cpplint.py (looked for ${installPath}) is not installed, and the build tried to download it from ${distUrl}.")

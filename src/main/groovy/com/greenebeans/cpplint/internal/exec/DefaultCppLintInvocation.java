@@ -17,10 +17,10 @@ package com.greenebeans.cpplint.internal.exec;
 
 import java.io.File;
 
-public class CppLintInvocation {
+class DefaultCppLintInvocation {
     private final File sourceFile;
 
-    public CppLintInvocation(File sourceFile) {
+    DefaultCppLintInvocation(File sourceFile) {
         this.sourceFile = sourceFile;
     }
 

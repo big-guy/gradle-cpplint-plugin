@@ -22,12 +22,12 @@ import org.gradle.process.internal.ExecException;
 
 import java.io.ByteArrayOutputStream;
 
-public class CppLintInvocationWorker implements Action<CppLintInvocation> {
+class CppLintInvocationWorker implements Action<DefaultCppLintInvocation> {
 
     private final CppLintSpec spec;
     private final ExecActionFactory execActionFactory;
 
-    public CppLintInvocationWorker(CppLintSpec spec, ExecActionFactory execActionFactory) {
+    CppLintInvocationWorker(CppLintSpec spec, ExecActionFactory execActionFactory) {
         this.spec = spec;
         this.execActionFactory = execActionFactory;
     }
@@ -37,7 +37,7 @@ public class CppLintInvocationWorker implements Action<CppLintInvocation> {
     }
 
     @Override
-    public void execute(CppLintInvocation cppLintInvocation) {
+    public void execute(DefaultCppLintInvocation cppLintInvocation) {
         ByteArrayOutputStream errOutput = new ByteArrayOutputStream();
         ByteArrayOutputStream stdOutput = new ByteArrayOutputStream();
 

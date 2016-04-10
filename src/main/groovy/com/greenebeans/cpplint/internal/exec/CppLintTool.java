@@ -30,10 +30,10 @@ public class CppLintTool implements Transformer<Boolean, CppLintSpec> {
 
     @Override
     public Boolean transform(CppLintSpec cppLintSpec) {
-        Action<CppLintInvocation> worker = new CppLintInvocationWorker(cppLintSpec, execActionFactory);
+        Action<DefaultCppLintInvocation> worker = new CppLintInvocationWorker(cppLintSpec, execActionFactory);
 
         for (File sourceFile : cppLintSpec.getSourceFiles()) {
-            worker.execute(new CppLintInvocation(sourceFile));
+            worker.execute(new DefaultCppLintInvocation(sourceFile));
         }
 
         return !cppLintSpec.getSourceFiles().isEmpty();

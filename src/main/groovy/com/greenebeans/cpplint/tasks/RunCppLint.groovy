@@ -92,7 +92,7 @@ class RunCppLint extends SourceTask {
                 files.addAll(getSource().getFiles())
             }
             CppLintSpec spec = createSpec(files, buildOperationLogger)
-            setDidWork(tool.transform(spec).didWork)
+            setDidWork(tool.transform(spec))
         } finally {
             buildOperationLogger.done()
         }

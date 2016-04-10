@@ -17,13 +17,11 @@ package com.greenebeans.cpplint.internal.exec;
 
 import org.gradle.api.Action;
 import org.gradle.api.Transformer;
-import org.gradle.api.internal.tasks.SimpleWorkResult;
-import org.gradle.api.tasks.WorkResult;
 import org.gradle.process.internal.ExecActionFactory;
 
 import java.io.File;
 
-public class CppLintTool implements Transformer<WorkResult, CppLintSpec> {
+public class CppLintTool implements Transformer<Boolean, CppLintSpec> {
     private final ExecActionFactory execActionFactory;
 
     public CppLintTool(ExecActionFactory execActionFactory) {
@@ -31,13 +29,13 @@ public class CppLintTool implements Transformer<WorkResult, CppLintSpec> {
     }
 
     @Override
-    public WorkResult transform(CppLintSpec cppLintSpec) {
+    public Boolean transform(CppLintSpec cppLintSpec) {
         Action<CppLintInvocation> worker = new CppLintInvocationWorker(cppLintSpec, execActionFactory);
 
         for (File sourceFile : cppLintSpec.getSourceFiles()) {
             worker.execute(new CppLintInvocation(sourceFile));
         }
 
-        return new SimpleWorkResult(!cppLintSpec.getSourceFiles().isEmpty());
+        return !cppLintSpec.getSourceFiles().isEmpty();
     }
 }

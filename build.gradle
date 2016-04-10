@@ -24,7 +24,7 @@ apply plugin: 'idea'
 apply from: 'gradle/integration-test.gradle'
 
 group = 'com.greenebeans'
-version = '0.1'
+version = '0.2'
 
 repositories {
     jcenter()

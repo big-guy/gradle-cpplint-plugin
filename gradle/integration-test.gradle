@@ -23,23 +23,6 @@ sourceSets {
     }
 }
 
-task createClasspathManifest {
-    def outputDir = sourceSets.integrationTest.output.resourcesDir
-
-    inputs.files sourceSets.main.runtimeClasspath
-    outputs.dir outputDir
-
-    doLast {
-        outputDir.mkdirs()
-        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
-    }
-}
-
-dependencies {
-    integrationTestCompile gradleTestKit()
-    integrationTestCompile files(createClasspathManifest)
-}
-
 task integrationTest(type: Test) {
     description = 'Runs the integration tests.'
     group = 'verification'
@@ -54,6 +37,10 @@ task integrationTest(type: Test) {
 }
 
 check.dependsOn integrationTest
+
+gradlePlugin {
+    testSourceSets project.sourceSets.integrationTest
+}
 
 idea.module {
     sourceSets.integrationTest.allSource.srcDirs.each {

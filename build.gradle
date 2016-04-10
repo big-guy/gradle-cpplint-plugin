@@ -18,6 +18,7 @@ plugins {
   id "com.gradle.plugin-publish" version "0.9.3"
 }
 
+apply plugin: 'java-gradle-plugin'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply from: 'gradle/integration-test.gradle'
@@ -32,7 +33,6 @@ repositories {
 dependencies {
     // Hack to put this before gradle-core
     compile fileTree(new File(gradle.gradleHomeDir, "lib/plugins/gradle-test-kit-${gradle.gradleVersion}.jar"))
-    compile gradleApi()
     testCompile ('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude module: 'groovy-all'
     }

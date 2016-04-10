@@ -21,8 +21,9 @@ import org.gradle.testkit.runner.TaskOutcome
 class CppLintIntegrationSpec extends AbstractIntegrationSpec {
     def setup() {
         buildFile << """
-apply plugin: 'com.greenebeans.cpplint'
-apply plugin: 'org.gradle.cpp'
+plugins {
+    id 'com.greenebeans.cpplint'
+}
 
 model {
     components {

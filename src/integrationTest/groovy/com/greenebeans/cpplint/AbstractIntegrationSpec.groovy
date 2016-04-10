@@ -33,25 +33,6 @@ abstract class AbstractIntegrationSpec extends Specification {
     def setup() {
         projectDir = temporaryFolder.root
         buildFile = temporaryFolder.newFile('build.gradle')
-
-        def pluginClasspathResource = getClass().classLoader.findResource("plugin-classpath.txt")
-        if (pluginClasspathResource == null) {
-            throw new IllegalStateException("Did not find plugin classpath resource, run 'integrationTestClasses' build task.")
-        }
-
-        def pluginClasspath = pluginClasspathResource.readLines()
-                .collect { it.replace('\\', '\\\\') } // escape backslashes in Windows paths
-                .collect { "'$it'" }
-                .join(", ")
-
-        // Add the logic under test to the test build
-        buildFile << """
-    buildscript {
-        dependencies {
-            classpath files($pluginClasspath)
-        }
-    }
-"""
     }
 
     File file(String path) {
@@ -67,6 +48,6 @@ abstract class AbstractIntegrationSpec extends Specification {
     }
 
     private GradleRunner createAndConfigureGradleRunner(String... arguments) {
-        GradleRunner.create().withProjectDir(projectDir).withArguments(arguments)
+        GradleRunner.create().withProjectDir(projectDir).withArguments(arguments).withPluginClasspath()
     }
 }

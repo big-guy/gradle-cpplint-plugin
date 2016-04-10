@@ -21,8 +21,10 @@ class CppLintPluginWellBehavedSpec extends AbstractIntegrationSpec {
     def "does not explode"() {
         given:
         buildFile << """
-            apply plugin: 'com.greenebeans.cpplint'
-        """
+plugins {
+    id 'com.greenebeans.cpplint'
+}
+"""
 
         expect:
         build("tasks", "--all")

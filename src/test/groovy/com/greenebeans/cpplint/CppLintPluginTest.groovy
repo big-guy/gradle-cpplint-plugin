@@ -65,10 +65,8 @@ class CppLintPluginTest extends Specification {
         2 * componentSpec.getName() >> "component"
         1 * binary1.getComponent() >> componentSpec
         1 * binary1.getName() >> "binary1"
-        1 * binary1.buildable >> true
         1 * binary2.getComponent() >> componentSpec
         1 * binary2.getName() >> "binary2"
-        1 * binary2.buildable >> true
 
         1 * binaries.iterator() >> {
             [ binary1, binary2 ].iterator()

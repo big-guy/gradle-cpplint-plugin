@@ -3,9 +3,11 @@ package com.greenebeans.cpplint.internal;
 import com.greenebeans.cpplint.tasks.InstallCppLint;
 import com.greenebeans.cpplint.tasks.RunCppLint;
 import org.gradle.api.*;
+import org.gradle.api.specs.Spec;
 import org.gradle.api.tasks.TaskCollection;
 import org.gradle.language.base.LanguageSourceSet;
 import org.gradle.language.base.plugins.LifecycleBasePlugin;
+import org.gradle.language.cpp.CppSourceSet;
 import org.gradle.language.nativeplatform.HeaderExportingSourceSet;
 import org.gradle.model.*;
 import org.gradle.nativeplatform.NativeBinarySpec;
@@ -44,32 +46,38 @@ public class CppLintPlugin implements Plugin<Project> {
         @Mutate
         public void createRunLintTasks(ModelMap<Task> tasks, @Path("binaries") ModelMap<NativeBinarySpec> binaries) {
             for (final NativeBinarySpec binary : binaries) {
-                if (binary.isBuildable()) {
-                    String taskName = buildRunLintTaskName(binary.getComponent().getName(), binary.getName());
-                    tasks.create(taskName, RunCppLint.class, new Action<RunCppLint>() {
-                        public void execute(RunCppLint task) {
-                            task.setNativeBinarySpec(binary);
-                            task.source(CollectionUtils.collect(binary.getInputs(), new Transformer<Iterable<File>, LanguageSourceSet>() {
-                                @Override
-                                public Iterable<File> transform(LanguageSourceSet o) {
-                                    return o.getSource();
-                                }
-                            }));
-                            task.source(CollectionUtils.collect(binary.getInputs().withType(HeaderExportingSourceSet.class), new Transformer<Iterable<File>, HeaderExportingSourceSet>() {
-                                @Override
-                                public Iterable<File> transform(HeaderExportingSourceSet o) {
-                                    return o.getExportedHeaders();
-                                }
-                            }));
-                            task.source(CollectionUtils.collect(binary.getInputs().withType(HeaderExportingSourceSet.class), new Transformer<Iterable<File>, HeaderExportingSourceSet>() {
-                                @Override
-                                public Iterable<File> transform(HeaderExportingSourceSet o) {
-                                    return o.getImplicitHeaders();
-                                }
-                            }));
-                        }
-                    });
-                }
+                String taskName = buildRunLintTaskName(binary.getComponent().getName(), binary.getName());
+                tasks.create(taskName, RunCppLint.class, new Action<RunCppLint>() {
+                    public void execute(RunCppLint task) {
+                        task.setNativeBinarySpec(binary);
+                        task.onlyIf(new Spec<Task>() {
+                            @Override
+                            public boolean isSatisfiedBy(Task task) {
+                                return binary.isBuildable();
+                            }
+                        });
+                        DomainObjectSet<CppSourceSet> cppSources = binary.getInputs().withType(HeaderExportingSourceSet.class).withType(CppSourceSet.class);
+
+                        task.source(CollectionUtils.collect(cppSources, new Transformer<Iterable<File>, LanguageSourceSet>() {
+                            @Override
+                            public Iterable<File> transform(LanguageSourceSet o) {
+                                return o.getSource();
+                            }
+                        }));
+                        task.source(CollectionUtils.collect(cppSources, new Transformer<Iterable<File>, HeaderExportingSourceSet>() {
+                            @Override
+                            public Iterable<File> transform(HeaderExportingSourceSet o) {
+                                return o.getExportedHeaders();
+                            }
+                        }));
+                        task.source(CollectionUtils.collect(cppSources, new Transformer<Iterable<File>, HeaderExportingSourceSet>() {
+                            @Override
+                            public Iterable<File> transform(HeaderExportingSourceSet o) {
+                                return o.getImplicitHeaders();
+                            }
+                        }));
+                    }
+                });
             }
         }
 

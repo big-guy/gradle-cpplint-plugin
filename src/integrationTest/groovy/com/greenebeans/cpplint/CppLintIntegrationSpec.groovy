@@ -30,8 +30,8 @@ model {
     }
 }
 """
-        def srcDir = file("src/main/cpp")
-        srcDir.mkdirs()
+        def srcDirs = [ file("src/main/cpp"), file("src/main/headers") ]
+        srcDirs*.mkdirs()
         def srcFile = file("src/main/cpp/main.cpp")
         srcFile << """
 // Copyright 2016 Example
@@ -82,6 +82,31 @@ int foo() { return 42; }
         when:
         srcFile << """
 // Copyright 2016 Example
+"""
+        and:
+        build("check")
+        then:
+        result.task(":runLintMainExecutable").outcome == TaskOutcome.SUCCESS
+    }
+
+
+    def "runs cpplint - bad code (headers)"() {
+        given:
+        def srcFile = file("src/main/headers/bad.h")
+        srcFile << """
+int foo();
+"""
+        when:
+        buildAndFail("check")
+        then:
+        result.task(":runLintMainExecutable").outcome == TaskOutcome.FAILED
+
+        when:
+        srcFile.text = """
+#ifndef SRC_MAIN_HEADERS_BAD_H_
+#define SRC_MAIN_HEADERS_BAD_H_
+// Copyright 2016 Example
+#endif  // SRC_MAIN_HEADERS_BAD_H_
 """
         and:
         build("check")

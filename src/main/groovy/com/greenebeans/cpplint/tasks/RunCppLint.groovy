@@ -97,6 +97,6 @@ class RunCppLint extends SourceTask {
 
     private CppLintSpec createSpec(Collection<File> files, BuildOperationLogger buildOperationLogger) {
         Counting enumValue = Counting.valueOf(counting.toUpperCase())
-        return new DefaultCppLintSpec(enumValue, project.file(executablePath), verbosity, files, buildOperationLogger)
+        return new DefaultCppLintSpec(project.getProjectDir(), enumValue, project.file(executablePath), verbosity, files, buildOperationLogger)
     }
 }

@@ -26,4 +26,5 @@ public interface CppLintSpec {
     int getVerbosity();
     Collection<File> getSourceFiles();
     BuildOperationLogger getBuildOperationLogger();
+    File getRoot();
 }

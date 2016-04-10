@@ -27,8 +27,10 @@ public class DefaultCppLintSpec implements CppLintSpec {
     private final int verbosity;
     private final Collection<File> sourceFiles;
     private final BuildOperationLogger buildOperationLogger;
+    private final File rootDir;
 
-    public DefaultCppLintSpec(Counting counting, File executablePath, int verbosity, Collection<File> sourceFiles, BuildOperationLogger buildOperationLogger) {
+    public DefaultCppLintSpec(File rootDir, Counting counting, File executablePath, int verbosity, Collection<File> sourceFiles, BuildOperationLogger buildOperationLogger) {
+        this.rootDir = rootDir;
         this.counting = counting;
         this.executablePath = executablePath;
         this.verbosity = verbosity;
@@ -59,5 +61,10 @@ public class DefaultCppLintSpec implements CppLintSpec {
     @Override
     public BuildOperationLogger getBuildOperationLogger() {
         return buildOperationLogger;
+    }
+
+    @Override
+    public File getRoot() {
+        return rootDir;
     }
 }

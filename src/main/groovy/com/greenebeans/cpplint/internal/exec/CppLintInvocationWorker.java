@@ -46,6 +46,7 @@ public class CppLintInvocationWorker implements Action<CppLintInvocation> {
         execAction.args("--root=" + spec.getRoot());
         execAction.args("--verbose=" + spec.getVerbosity());
         execAction.args("--counting=" + spec.getCounting().toString().toLowerCase());
+        execAction.args(spec.getArgs());
         execAction.args(cppLintInvocation.getSourceFile());
 
         execAction.setErrorOutput(errOutput);

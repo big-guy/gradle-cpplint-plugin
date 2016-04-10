@@ -19,6 +19,7 @@ import org.gradle.internal.operations.logging.BuildOperationLogger;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 public interface CppLintSpec {
     Counting getCounting();
@@ -27,4 +28,6 @@ public interface CppLintSpec {
     Collection<File> getSourceFiles();
     BuildOperationLogger getBuildOperationLogger();
     File getRoot();
+
+    List<String> getArgs();
 }

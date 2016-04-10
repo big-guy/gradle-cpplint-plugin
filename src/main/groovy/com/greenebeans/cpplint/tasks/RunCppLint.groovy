@@ -57,6 +57,9 @@ class RunCppLint extends SourceTask {
     @Input
     int verbosity
 
+    @Input
+    List<String> args = []
+
     @OutputDirectory
     File reportFile = new File(project.buildDir, "reports/cpplint")
 
@@ -97,6 +100,6 @@ class RunCppLint extends SourceTask {
 
     private CppLintSpec createSpec(Collection<File> files, BuildOperationLogger buildOperationLogger) {
         Counting enumValue = Counting.valueOf(counting.toUpperCase())
-        return new DefaultCppLintSpec(project.getProjectDir(), enumValue, project.file(executablePath), verbosity, files, buildOperationLogger)
+        return new DefaultCppLintSpec(project.getProjectDir(), enumValue, project.file(executablePath), verbosity, args, files, buildOperationLogger)
     }
 }
